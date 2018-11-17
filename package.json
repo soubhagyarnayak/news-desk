@@ -9,6 +9,7 @@
   "author": "srnayak",
   "license": "MIT",
   "dependencies": {
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "pg": "^7.6.1"
   },

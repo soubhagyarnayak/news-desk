@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hacker News Articles</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body class="container">
+    <main>
+        <div class="jumbotron">
+            <h1>Hacker news articles</h1>
+        </div>
+        <ul>
+            <% articles.forEach(function(article){ %>
+                <li><a href=<%= article.link%>><%= article.title%></a>&nbsp;
+                    <input type="button" onclick="alert('<%= article.id%>');" value="Read" id="rb<%= article.id%>"/>&nbsp;
+                    <input type="button" onclick="alert('<%= article.id%>');" value="Remove" id="rmb<%= article.id%>"/>
+                </li>
+            <%  }); %>
+        </ul>
+    </main>
+</body>
+</html>
+
+

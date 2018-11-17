@@ -13,14 +13,13 @@ module.exports = function(app)
         res.send('News Reader');
 	});
     app.get('/hn',function(req,res){
-        //res.send('hackernews.html');
         pool.query('SELECT * FROM hackernewsarticles order by CreateTime DESC', function(err,result) {
-            pool.end(); // closing the connection;
+            pool.end();
             if(err){
                 console.log(err);
                 res.status(400).send(err);
             }
-            res.status(200).send(result.rows);
+            res.render("hn",{articles:result.rows});
         });
     });
 }
