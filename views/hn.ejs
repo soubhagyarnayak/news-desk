@@ -3,6 +3,27 @@
     <meta charset="UTF-8">
     <title>Hacker News Articles</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script>
+        function readButtonClicked(id){
+            let data = {'operation':'markRead', 'id':id};
+            postData(data);
+        }
+        function removeButtonClicked(id){
+            let data = {'operation':'remove', 'id':id};
+            postData(data);
+        }
+        function postData(data){
+            fetch('/hn', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(function(response) {
+                    console.log(response.json());
+            }).catch(error => console.error('Encountered error while posting data.', error));
+        }
+    </script>
 </head>
 <body class="container">
     <main>
@@ -11,9 +32,10 @@
         </div>
         <ul>
             <% articles.forEach(function(article){ %>
-                <li><a href=<%= article.link%>><%= article.title%></a>&nbsp;
-                    <input type="button" onclick="alert('<%= article.id%>');" value="Read" id="rb<%= article.id%>"/>&nbsp;
-                    <input type="button" onclick="alert('<%= article.id%>');" value="Remove" id="rmb<%= article.id%>"/>
+                <li><a href=<%= article.link%> target="_blank"><%= article.title%></a>&nbsp;
+                    <input type="button" onclick="readButtonClicked('<%= article.id%>');" value="Mark Read" id="rb<%= article.id%>"/>&nbsp;
+                    <input type="button" onclick="removeButtonClicked('<%= article.id%>');" value="Remove" id="rmb<%= article.id%>"/>&nbsp;
+                    <a href="https://news.ycombinator.com/item?id=<%=article.id%>" target="_blank">Comments</a>&nbsp;
                 </li>
             <%  }); %>
         </ul>
