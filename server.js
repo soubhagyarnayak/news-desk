@@ -6,7 +6,8 @@ var app = express();
 require('./router/main')(app);
 app.set('view engine', 'ejs');
 app.set('views',__dirname + '/views');
+app.use(express.static(__dirname + '/public'));
 
-var server =  app.listen(3000,function(){
+app.listen(3000,'0.0.0.0',function(){
     console.log("news reader running on port 3000.");
 });

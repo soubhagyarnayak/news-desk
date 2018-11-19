@@ -3,40 +3,11 @@
     <meta charset="UTF-8">
     <title>Hacker News Articles</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <script>
-        function readButtonClicked(id){
-            let data = {'operation':'markRead', 'id':id};
-            postData(data);
-        }
-        function removeButtonClicked(id){
-            let data = {'operation':'remove', 'id':id};
-            postData(data);
-        }
-        function postData(data){
-            fetch('/hn', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            }).then(function(response) {
-                console.log(data.id);
-                var element = document.getElementById(data.id);
-                element.parentNode.removeChild(element);
-            }).catch(error => {
-                console.error('Encountered error while posting data.', error);
-                document.getElementById('errorMessage').style.display = "block";
-            });
-        }
-        function dismissAlert(){
-            document.getElementById('errorMessage').style.display = "none";
-        }
-    </script>
 </head>
 <body class="container">
     <main>
         <div id="errorMessage" style="display:none" class="alert alert-danger fade in">
-            <a href="#" class="close" data-dismiss="alert" onclick="dismissAlert();">&times;</a>
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
             <strong>Error!</strong> A problem has been occurred while submitting your data.
         </div>
         <div class="jumbotron">
@@ -46,13 +17,14 @@
         <ul>
             <% articles.forEach(function(article){ %>
                 <li id="<%=article.id%>"><a href=<%= article.link%> target="_blank"><%= article.title%></a>&nbsp;
-                    <input type="button" onclick="readButtonClicked('<%= article.id%>');" value="Mark Read" id="rb<%= article.id%>"/>&nbsp;
-                    <input type="button" onclick="removeButtonClicked('<%= article.id%>');" value="Remove" id="rmb<%= article.id%>"/>&nbsp;
+                    <input type="button" value="Mark Read" id="rb<%= article.id%>" class="readButton"/>&nbsp;
+                    <input type="button" value="Remove" id="rmb<%= article.id%>" class="removeButton"/>&nbsp;
                     <a href="https://news.ycombinator.com/item?id=<%=article.id%>" target="_blank">Comments</a>&nbsp;
                 </li>
             <%  }); %>
         </ul>
     </main>
+    <script src="/scripts/hn.js"></script>
 </body>
 </html>
 
