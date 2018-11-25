@@ -5,7 +5,7 @@ var bodyParser = require("body-parser");
 
 var jsonParser = bodyParser.json()
 
-var connectionString = "postgres://postgres:<pwd>@localhost:5432/feeds";
+var connectionString = `${process.env.DATABASE_CONNECTION_STRING}/feeds`;
 const pool = new pg.Pool({
     connectionString: connectionString,
   });
