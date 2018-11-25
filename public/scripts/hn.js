@@ -24,10 +24,22 @@ var hn = (function() {
     };
     var annotateButtonClicked = function(event){
         var id = event.target.parentNode.getAttribute('id');
-        var notesContainer = document.getElementById("notesContainer");
-        notesContainer.style.verticalAlign = "middle";
-        notesContainer.style.display = "block";
-        notesContainer.setAttribute("associatedId",id);
+        fetch(`hn/article?id=${id}`,{
+            method: 'GET'
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            var notesContainer = document.getElementById("notesContainer");
+            notesContainer.style.verticalAlign = "middle";
+            notesContainer.style.display = "block";
+            notesContainer.setAttribute("associatedId",id);
+            console.log(data);
+            document.getElementById("tags").value = data.tags||'';
+            document.getElementById('notes').value = data.notes||'';
+        }).catch(error=>{
+            console.error('Encountered error while getting annotations.', error);
+            document.getElementById('errorMessage').style.display = "block";
+        });
     };
     function _postData(data, onSuccess){
         fetch('/hn', {

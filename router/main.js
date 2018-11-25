@@ -46,4 +46,21 @@ module.exports = function(app)
             }
         });
     });
+    app.get('/hn/article', function(req,res){
+        var query = "SELECT tags,notes,description FROM hackernewsarticles WHERE id=$1";
+        var args = [req.query.id];
+        pool.query(query,args,function(err,result){
+            if(err){
+                console.log(err);
+                res.status(500).send(err);
+            } else {
+                var article = {};
+                if(result.rows.length > 0){
+                    var row = result.rows[0];
+                    article = {'tags':row.tags,'notes':row.notes,'description':row.description}; 
+                }
+                res.status(200).send(article);
+            }
+        });
+    });
 }
