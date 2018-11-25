@@ -13,7 +13,7 @@ const pool = new pg.Pool({
 module.exports = function(app)
 {
     app.get('/',function(req,res){
-        res.send('News Reader');
+        res.render('index');
 	});
     app.get('/hn',function(req,res){
         pool.query('SELECT * FROM hackernewsarticles WHERE isread IS NULL AND isremoved IS NULL ORDER BY CreateTime DESC', function(err,result) {
@@ -24,6 +24,9 @@ module.exports = function(app)
             res.render("hn",{articles:result.rows});
         });
     });
+    app.get('/settings',function(req,res){
+        res.render('settings');
+	});
     app.post('/hn', jsonParser, function(req,res){
         var query = null;
         var args = [];
