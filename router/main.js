@@ -66,4 +66,19 @@ module.exports = function(app)
             }
         });
     });
+    app.post('/oped/category', jsonParser, function(req,res){
+        console.log(req.body);
+        if(req.body.operation == 'insert'){
+            var query = "INSERT INTO OpEdCategory (Link, Title, Description) VALUES ($1,$2,$3);";
+            var args = [req.body.link,req.body.title,req.body.description];
+            pool.query(query,args,function(err,result){
+                if(err){
+                    console.log(err);
+                    res.status(500).send(err);
+                } else {
+                    res.status(200).send();
+                }
+            });
+        }
+    });
 }
