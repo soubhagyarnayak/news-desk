@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+    <% include ./partials/head %>`
+    <title>Opinions and Editorials</title>
+</head>
+<body class="container">
+    <main>
+        <div id="errorMessage" style="display:none" class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> A problem has been occurred while submitting your data.
+        </div>
+        <div id="notesContainer" style="display:none" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Annotate</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="notesCrossButton"> 
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="notes" style="display:block;width:100%;padding: 2px" placeholder="add notes"></textarea>
+                        <textarea id="tags" style="display:block;width:100%;padding: 2px" placeholder="add tags"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="notesCloseButton">Close</button>
+                        <button type="button" class="btn btn-primary" id="addAnnotationButton">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron">
+            <h1>Opinions and Editorials. </h1>
+            <h2>Backlog count:<%=pending%></h2>
+        </div>
+        <% categories.forEach(function (category){%>
+            <h4><%=category.title%></h4>
+            <ul>
+                <% category.articles.forEach(function(article){ %>
+                    <li id="<%=article.id%>"><a href=<%= article.link%> target="_blank"><%= article.title%></a>&nbsp;
+                        <input type="button" value="Mark Read" id="rb<%= article.id%>" class="readButton"/>&nbsp;
+                        <input type="button" value="Remove" id="rmb<%= article.id%>" class="removeButton"/>&nbsp;
+                        <input type="button" value="Annotate" id="ann<%= article.id%>" class="annotateButton"/>&nbsp;
+                    </li>
+                <%  }); %>
+            </ul>
+        <% });%>
+    </main>
+    <script src="/scripts/hn.js"></script>
+</body>
+</html>
+
+

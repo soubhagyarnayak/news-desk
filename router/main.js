@@ -26,7 +26,30 @@ module.exports = function(app)
     });
     app.get('/settings',function(req,res){
         res.render('settings');
-	});
+    });
+    app.get('/oped', function(req,res){
+        var query = 'SELECT OpEdArticle.Id,OpEdArticle.Link,OpEdArticle.Title,OpEdArticle.PublicationTime,OpEdCategory.Title AS CategoryTitle FROM OpEdArticle JOIN OpEdCategory ON OpEdArticle.CategoryId = OpEdCategory.Id WHERE IsRead IS NULL AND IsRemoved IS NULL ORDER BY PublicationTime DESC';
+        pool.query(query, function(err,result){
+            if(err){
+                console.log(err);
+                res.status(400).send(err);
+            }
+            var categoriesMap = {};
+            var pending = 0;
+            result.rows.forEach(function(row){
+                if(!(row.categorytitle in categoriesMap)){
+                    categoriesMap[row.categorytitle]=[];
+                }
+                categoriesMap[row.categorytitle].push({'id':row.id,'link':row.link,'title':row.title,'pubTime':row.publicationtime})
+                pending++;
+            });
+            var categories = [];
+            for(var key in categoriesMap){
+                categories.push({'title':key,'articles':categoriesMap[key]});
+            }
+            res.render('oped',{categories:categories,pending:pending});
+        });
+    });
     app.post('/hn', jsonParser, function(req,res){
         var query = null;
         var args = [];
