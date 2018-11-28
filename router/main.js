@@ -3,7 +3,10 @@
 var pg = require("pg");
 var bodyParser = require("body-parser");
 
-var jsonParser = bodyParser.json()
+var amqp = require('amqplib/callback_api');
+var COMMAND_QUEUE = 'newsparser';
+
+var jsonParser = bodyParser.json();
 
 var connectionString = `${process.env.DATABASE_CONNECTION_STRING}/feeds`;
 const pool = new pg.Pool({
@@ -90,7 +93,6 @@ module.exports = function(app)
         });
     });
     app.post('/oped/category', jsonParser, function(req,res){
-        console.log(req.body);
         if(req.body.operation == 'insert'){
             var query = "INSERT INTO OpEdCategory (Link, Title, Description) VALUES ($1,$2,$3);";
             var args = [req.body.link,req.body.title,req.body.description];
@@ -104,4 +106,26 @@ module.exports = function(app)
             });
         }
     });
+    app.post('/settings/command',jsonParser,function(req,res){
+        if(req.body.command == 'hnrefresh'){
+            runCommand("processHN");
+        }
+        else if(req.body.command == 'opedrefresh'){
+            runCommand("processOpEd");
+        }
+        else{
+            console.log(`Command ${req.body.command} is not currently supported.`);
+            res.status(400).send();
+        }
+    });
+    var runCommand = function(command){
+        amqp.connect('amqp://localhost', function(err, connection) {
+            connection.createChannel(function(err, channel) {
+                var queue = COMMAND_QUEUE;
+                channel.assertQueue(queue, {durable: false});
+                channel.sendToQueue(queue, Buffer.from(`{"command": "${command}"}`));
+            });
+            setTimeout(function() { connection.close(); }, 500);
+        });
+    }
 }

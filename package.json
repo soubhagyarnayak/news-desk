@@ -9,6 +9,7 @@
   "author": "srnayak",
   "license": "MIT",
   "dependencies": {
+    "amqplib": "^0.5.2",
     "body-parser": "^1.18.3",
     "bootstrap": "^4.1.3",
     "dotenv": "^6.1.0",

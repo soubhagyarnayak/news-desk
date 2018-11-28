@@ -26,17 +26,38 @@ var settings = (function() {
             console.log(error);
         });
     };
-    var dismissAlert = function dismissAlert(){
+    var dismissAlert = function (){
         document.getElementById('errorMessage').style.display = "none";
     };
-    var dismissOpEdCategory = function dismissOpEdCategory(){
+    var dismissOpEdCategory = function (){
         document.getElementById('categoryContainer').style.display = "none";
     };
+    var refreshhn = function(){
+        runCommand('hnrefresh');
+    };
+    var refreshoped = function(){
+        runCommand('opedrefresh');
+    };
+    var runCommand = function(command){
+        var data = {'command':command};
+        fetch('/settings/command', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        }).catch(error=>{
+            document.getElementById('errorMessage').style.display = "block";
+            console.log(error);
+        });
+    }
     return {
         dismissAlert: dismissAlert,
         opEdCategoryButtonClicked: opEdCategoryButtonClicked,
         addOpEdCategoryButtonClicked: addOpEdCategoryButtonClicked,
-        dismissOpEdCategory: dismissOpEdCategory
+        dismissOpEdCategory: dismissOpEdCategory,
+        refreshhn: refreshhn,
+        refreshoped: refreshoped
     };
 }());
 
@@ -47,4 +68,6 @@ document.addEventListener("DOMContentLoaded", function(event){
     document.getElementById("addCategoryButton").addEventListener("click",settings.addOpEdCategoryButtonClicked);
     document.getElementById("categoryCloseButton").addEventListener("click",settings.dismissOpEdCategory);
     document.getElementById("categoryCrossButton").addEventListener("click",settings.dismissOpEdCategory);
+    document.getElementById("refreshhn").addEventListener("click",settings.refreshhn);
+    document.getElementById("refreshoped").addEventListener("click",settings.refreshoped);
 });
