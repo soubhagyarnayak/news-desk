@@ -1,22 +1,30 @@
+import {removeArticle, addEventListeners, postData} from './article.js';
+
+'use strict';
+
 var hn = (function() {
-    'use strict';
     var readButtonClicked = function(event){
         var id = event.target.parentNode.getAttribute('id');
         let data = {'operation':'markRead', 'id':id};
-        _postData(data,_removeOnSuccess);
+        postData('/hn',data,removeArticle);
     };
     var removeButtonClicked = function(event){
         var id = event.target.parentNode.getAttribute('id');
         let data = {'operation':'remove', 'id':id};
-        _postData(data,_removeOnSuccess);
+        postData('/hn',data,removeArticle);
     };
+    var archiveButtonClicked = function(event){
+        var id = event.target.parentNode.getAttribute('id');
+        let data = {'operation':'archive', 'id':id, 'url':"https://news.ycombinator.com/item?id="+id};
+        postData('/hn',data,()=>{});
+    }
     var addAnnotateButtonClicked = function(event){
         var notesContainer = document.getElementById("notesContainer");
         var id = notesContainer.getAttribute("associatedId");
         var tags = document.getElementById("tags").value;
         var notes = document.getElementById("notes").value;
         let data = {'operation':'annotate', 'id':id, 'tags':tags, 'notes':notes};
-        _postData(data,()=>{
+        postData('/hn',data,()=>{
             notesContainer.style.display = "none";
             document.getElementById("tags").value = "";
             document.getElementById("notes").value ="";
@@ -41,44 +49,17 @@ var hn = (function() {
             document.getElementById('errorMessage').style.display = "block";
         });
     };
-    function _postData(data, onSuccess){
-        fetch('/hn', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers:{
-                'Content-Type': 'application/json'
-            }
-        }).then(function(response) {
-            console.log(data.id);
-            onSuccess(data);
-        }).catch(error => {
-            console.error('Encountered error while posting data.', error);
-            document.getElementById('errorMessage').style.display = "block";
-        });
-    };
-    function _removeOnSuccess(data){
-        var element = document.getElementById(data.id);
-        element.parentNode.removeChild(element);
-    }
-    var dismissAlert = function dismissAlert(){
-        document.getElementById('errorMessage').style.display = "none";
-    };
-    var dismissNotes = function dismissNotes(){
-        document.getElementById('notesContainer').style.display = "none";
-    };
+
     return {
-        dismissAlert: dismissAlert,
         readButtonClicked: readButtonClicked,
         removeButtonClicked: removeButtonClicked,
         annotateButtonClicked: annotateButtonClicked,
         addAnnotateButtonClicked : addAnnotateButtonClicked,
-        dismissNotes : dismissNotes
+        archiveButtonClicked : archiveButtonClicked
     };
 }());
 
 document.addEventListener("DOMContentLoaded", function(event){
-    console.log("DOMContentLoaded");
-    document.getElementById("errorMessage").addEventListener("click",hn.dismissAlert);
     document.getElementById("addAnnotationButton").addEventListener("click",hn.addAnnotateButtonClicked);
     var markReadButtons = document.querySelectorAll("input.readButton");
     markReadButtons.forEach(function(markReadButton){
@@ -92,6 +73,9 @@ document.addEventListener("DOMContentLoaded", function(event){
     annotateButtons.forEach(function(annotateButton){
         annotateButton.addEventListener("click", hn.annotateButtonClicked);
     });
-    document.getElementById("notesCloseButton").addEventListener("click",hn.dismissNotes);
-    document.getElementById("notesCrossButton").addEventListener("click",hn.dismissNotes);
+    var archiveButtons = document.querySelectorAll("input.archiveButton");
+    archiveButtons.forEach(function(archiveButton){
+        archiveButton.addEventListener("click", hn.archiveButtonClicked);
+    });
+    addEventListeners();
 });
