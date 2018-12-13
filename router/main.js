@@ -65,6 +65,9 @@ module.exports = function(app)
         } else if(req.body.operation=='annotate'){
             query = "UPDATE hackernewsarticles SET tags = $1, notes=$2 WHERE id =$3";
             args = [req.body.tags,req.body.notes,req.body.id];
+        } else if(req.body.operation=='archive'){
+            runCommand(`{"command":"archive","id":"${req.body.id}","url":"${req.body.url}"}`);
+            return;
         }
         pool.query(query,args,function(err,result){
             if(err){
@@ -108,10 +111,10 @@ module.exports = function(app)
     });
     app.post('/settings/command',jsonParser,function(req,res){
         if(req.body.command == 'hnrefresh'){
-            runCommand("processHN");
+            runCommand('{"command": "processHN"}');
         }
         else if(req.body.command == 'opedrefresh'){
-            runCommand("processOpEd");
+            runCommand('{"command": "processOpEd"}');
         }
         else{
             console.log(`Command ${req.body.command} is not currently supported.`);
@@ -123,7 +126,7 @@ module.exports = function(app)
             connection.createChannel(function(err, channel) {
                 var queue = COMMAND_QUEUE;
                 channel.assertQueue(queue, {durable: false});
-                channel.sendToQueue(queue, Buffer.from(`{"command": "${command}"}`));
+                channel.sendToQueue(queue, Buffer.from(command));
             });
             setTimeout(function() { connection.close(); }, 500);
         });

@@ -39,12 +39,13 @@
                     <input type="button" value="Mark Read" id="rb<%= article.id%>" class="readButton"/>&nbsp;
                     <input type="button" value="Remove" id="rmb<%= article.id%>" class="removeButton"/>&nbsp;
                     <input type="button" value="Annotate" id="ann<%= article.id%>" class="annotateButton"/>&nbsp;
+                    <input type="button" value="Archive" id="arcv<%= article.id%>" class="archiveButton"/>&nbsp;
                     <a href="https://news.ycombinator.com/item?id=<%=article.id%>" target="_blank">Comments</a>&nbsp;
                 </li>
             <%  }); %>
         </ul>
     </main>
-    <script src="/scripts/hn.js"></script>
+    <script src="/scripts/hn.js" type="module"></script>
 </body>
 </html>
 
