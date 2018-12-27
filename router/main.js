@@ -116,6 +116,9 @@ module.exports = function(app)
         else if(req.body.command == 'opedrefresh'){
             runCommand('{"command": "processOpEd"}');
         }
+        else if(req.body.command == 'purgehn'){
+            runCommand('{"command":"purgeHN"}');
+        }
         else{
             console.log(`Command ${req.body.command} is not currently supported.`);
             res.status(400).send();

@@ -38,6 +38,9 @@ var settings = (function() {
     var refreshoped = function(){
         runCommand('opedrefresh');
     };
+    var purgehn = function(){
+        runCommand('purgehn');
+    }
     var runCommand = function(command){
         var data = {'command':command};
         fetch('/settings/command', {
@@ -57,7 +60,8 @@ var settings = (function() {
         addOpEdCategoryButtonClicked: addOpEdCategoryButtonClicked,
         dismissOpEdCategory: dismissOpEdCategory,
         refreshhn: refreshhn,
-        refreshoped: refreshoped
+        refreshoped: refreshoped,
+        purgehn : purgehn
     };
 }());
 
@@ -70,4 +74,5 @@ document.addEventListener("DOMContentLoaded", function(event){
     document.getElementById("categoryCrossButton").addEventListener("click",settings.dismissOpEdCategory);
     document.getElementById("refreshhn").addEventListener("click",settings.refreshhn);
     document.getElementById("refreshoped").addEventListener("click",settings.refreshoped);
+    document.getElementById("purgehn").addEventListener("click",settings.purgehn);
 });
