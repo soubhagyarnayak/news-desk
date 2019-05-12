@@ -3,7 +3,7 @@
 var pg = require("pg");
 var bodyParser = require("body-parser");
 
-var amqp = require('amqplib/callback_api');
+var amqp = require('amqplib');
 var COMMAND_QUEUE = 'newsparser';
 
 var jsonParser = bodyParser.json();
@@ -109,22 +109,42 @@ module.exports = function(app)
             });
         }
     });
-    app.post('/settings/command',jsonParser,function(req,res){
+    app.post('/settings/command',jsonParser,async function(req,res){
+		var result = true;
+		console.log(`Trying to run command:${req.body.command}`);
         if(req.body.command == 'hnrefresh'){
-            runCommand('{"command": "processHN"}');
+            result = await runCommandAsync('{"command": "processHN"}');
         }
         else if(req.body.command == 'opedrefresh'){
-            runCommand('{"command": "processOpEd"}');
+            result = await runCommandAsync('{"command": "processOpEd"}');
         }
         else if(req.body.command == 'purgehn'){
-            runCommand('{"command":"purgeHN"}');
+            result = await runCommandAsync('{"command":"purgeHN"}');
         }
         else{
             console.log(`Command ${req.body.command} is not currently supported.`);
             res.status(400).send();
         }
+		if(!result){
+			res.status(500).send();
+		}
     });
-    var runCommand = function(command){
+    var runCommandAsync = async function(command){
+		try{
+			const connection = await amqp.connect('amqp://localhost');
+			const channel = await connection.createChannel();
+			const queue = COMMAND_QUEUE;
+			channel.assertQueue(queue, {durable: false});
+			channel.sendToQueue(queue, Buffer.from(command));
+			setTimeout(function() { connection.close(); }, 500);
+			return true;
+		}
+		catch(error){
+			console.log(`Encountered error: ${error} while trying to connect to task queue.`);
+			return false;
+		}
+    };
+	var runCommand = function(command){
         amqp.connect('amqp://localhost', function(err, connection) {
             connection.createChannel(function(err, channel) {
                 var queue = COMMAND_QUEUE;
@@ -133,5 +153,5 @@ module.exports = function(app)
             });
             setTimeout(function() { connection.close(); }, 500);
         });
-    }
+	};
 }
