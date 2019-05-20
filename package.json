@@ -9,15 +9,16 @@
   "author": "srnayak",
   "license": "MIT",
   "dependencies": {
-    "amqplib": "^0.5.2",
-    "body-parser": "^1.18.3",
+    "amqplib": "^0.5.3",
+    "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
-    "dotenv": "^6.1.0",
+    "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
-    "express": "^4.16.4",
-    "pg": "^7.6.1"
+    "express": "^4.17.0",
+    "pg": "^7.11.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.8"
+    "nodemon": "^1.19.0",
+    "typescript": "^3.4.5"
   }
 }

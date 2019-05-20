@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "./public/scripts",
+        "allowJs": true,
+        "target": "es2017"
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
