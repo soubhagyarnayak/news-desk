@@ -129,6 +129,16 @@ module.exports = function(app)
 			res.status(500).send();
 		}
     });
+    app.get('/hn/tags',jsonParser, async function(req,res){
+        var query = "SELECT id,tag,description FROM hacker_news_tags";
+        pool.query(query,[],function(err,result){
+            if(err){
+                console.log(err);
+                res.status(400).send(err);
+            }
+            res.render("tags",{tags:result.rows});
+        });
+    });
     var runCommandAsync = async function(command){
 		try{
 			const connection = await amqp.connect('amqp://localhost');

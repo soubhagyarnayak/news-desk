@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <% include ./partials/head %>`
+    <title>Hacker News Tags</title>
+</head>
+<body class="container">
+    <main>
+        <div id="errorMessage" style="display:none" class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> A problem has been occurred while submitting your data.
+        </div>
+        <div class="jumbotron">
+            <h1>Hacker news tags. </h1>
+            <h2>Tags count:<%=tags.length%></h2>
+        </div>
+        <ul>
+            <% tags.forEach(function(tag){ %>
+                <li id="<%=tag.id%>"><a href="/hn/tags/<%= tag.id %>" target="_blank"><%= tag.tag%></a>&nbsp;
+                    <%=tag.description%>
+                </li>
+            <%  }); %>
+        </ul>
+    </main>
+</body>
+</html>
