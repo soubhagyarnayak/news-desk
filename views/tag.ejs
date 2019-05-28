@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+    <% include ./partials/head %>`
+    <title>Hacker News Tagged Articles</title>
+</head>
+<body class="container">
+    <main>
+        <div id="errorMessage" style="display:none" class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> A problem has been occurred while submitting your data.
+        </div>
+        <div id="notesContainer" style="display:none" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Annotate</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="notesCrossButton"> 
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="notes" style="display:block;width:100%;padding: 2px" placeholder="add notes"></textarea>
+                        <textarea id="tags" style="display:block;width:100%;padding: 2px" placeholder="add tags"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="notesCloseButton">Close</button>
+                        <button type="button" class="btn btn-primary" id="addAnnotationButton">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron">
+            <h1>Hacker news articles. </h1>
+            <h2>Tag:<%=tag%>&nbsp<%=description%></h2>
+            <h2>Backlog count:<%=articles.length%></h2>
+        </div>
+        <ul>
+            <% articles.forEach(function(article){ %>
+                <li id="<%=article.id%>"><a href=<%= article.link%> target="_blank"><%= article.title%></a>&nbsp;
+                    <input type="button" value="Mark Read" id="rb<%= article.id%>" class="readButton"/>&nbsp;
+                    <input type="button" value="Remove" id="rmb<%= article.id%>" class="removeButton"/>&nbsp;
+                    <input type="button" value="Annotate" id="ann<%= article.id%>" class="annotateButton"/>&nbsp;
+                    <input type="button" value="Archive" id="arcv<%= article.id%>" class="archiveButton"/>&nbsp;
+                    <a href="https://news.ycombinator.com/item?id=<%=article.id%>" target="_blank">Comments</a>&nbsp;
+                </li>
+            <%  }); %>
+        </ul>
+    </main>
+    <script src="/scripts/hn.js" type="module"></script>
+</body>
+</html>
+
+

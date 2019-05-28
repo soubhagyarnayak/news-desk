@@ -139,6 +139,31 @@ module.exports = function(app)
             res.render("tags",{tags:result.rows});
         });
     });
+    app.get('/hn/tags/:tagId',jsonParser, async function(req,res){
+        var query = "SELECT tag,description FROM hacker_news_tags WHERE id=$1";
+        var tagId = req.params.tagId;
+        var args = [tagId];
+        pool.query(query,args,function(err,result){
+            if(err){
+                console.log(err);
+                res.status(400).send(err);
+            }
+            if(result.rowCount > 0){
+                var tag = result.rows[0].tag;
+                var description = result.rows[0].description;
+                pool.query('SELECT * FROM hackernewsarticles WHERE Tags LIKE $1 ORDER BY CreateTime DESC', [`%${tag}%`],function(err,result) {
+                    if(err){
+                        console.log(err);
+                        res.status(400).send(err);
+                    }
+                    res.render("tag",{articles:result.rows,tag:tag,tagId:tagId,description:description});
+                });
+            }
+            else{
+                res.render("tag",{articles:[],tag:null,tagId:tagId,description:null});
+            }
+        });
+    });
     var runCommandAsync = async function(command){
 		try{
 			const connection = await amqp.connect('amqp://localhost');
