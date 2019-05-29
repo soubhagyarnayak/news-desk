@@ -1,11 +1,13 @@
 'use strict'
 
 var express = require("express");
+var morgan = require("morgan");
+
 var app = express();
 
 require('dotenv').config();
 
-
+app.use(morgan('dev'));
 require('./router/main')(app);
 app.set('view engine', 'ejs');
 app.set('views',__dirname + '/views');
